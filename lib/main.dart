@@ -1,4 +1,7 @@
-import 'package:dealers/pages/home.dart';
+import 'package:dealers/components/colors.dart';
+import 'package:dealers/components/fonts.dart';
+import 'package:dealers/pages/customers/ui/c_profile.dart';
+import 'package:dealers/pages/home/home.dart';
 import 'package:dealers/pages/login/ui/login.dart';
 import 'package:dealers/pages/login/ui/otp.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +12,8 @@ void main() {
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarBrightness: Brightness.dark,
-        statusBarColor: Colors.white
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark
       )
   );
   runApp(MyApp());
@@ -22,13 +26,15 @@ class MyApp extends StatelessWidget {
         title: 'FuelCharge',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            primarySwatch: Colors.blue,
+            primaryColor: primaryColor,
+            fontFamily: primaryFont,
             visualDensity: VisualDensity.adaptivePlatformDensity),
-        initialRoute: "/otp",
+        initialRoute: "/customer/profile/",
         routes: {
           "/home": (context) => Home(),
           "/login": (context) => Login(),
-          "/otp": (context) => OTP()
+          "/otp": (context) => OTP(),
+          "/customer/profile/": (context) => CustomerProfile()
         });
   }
 }

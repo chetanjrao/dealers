@@ -40,13 +40,12 @@ class _OTPState extends State<OTP> {
               children: [
                 Container(
                     margin: const EdgeInsets.only(top: 12.0),
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
+                    child: const BackButton(
+                      color: Colors.black
                     )
                   ),
                 Container(
-                    margin: const EdgeInsets.only(top: 24.0),
+                    margin: const EdgeInsets.only(top: 12.0),
                     child: const Text(
                     "Enter OTP",
                     style: TextStyle(
