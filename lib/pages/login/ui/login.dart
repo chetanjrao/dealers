@@ -1,9 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dealers/api/client.dart';
 import 'package:dealers/components/colors.dart';
 import 'package:dealers/components/components.dart';
 import 'package:dealers/components/fonts.dart';
+import 'package:dealers/pages/login/ui/otp.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,6 +17,33 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool isLoading = false;
+  String mobile = "";
+  final GlobalKey<ScaffoldState> key = new GlobalKey<ScaffoldState>();
+  final APIClient apiClient = new APIClient();
+
+  void processLogin(String mobile) async {
+    setState(() {
+      isLoading = true;
+    });
+    Response response = await apiClient.processLogin(mobile);
+    dynamic jsonResponse = jsonDecode(response.body);
+    if (response.statusCode == 201) {
+      setState(() {
+        isLoading = false;
+      });
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => OTP(mobile: mobile)));
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      key.currentState.showSnackBar(SnackBar(
+        content: Text("${jsonResponse["message"]}"),
+      ));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +53,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: key,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -64,16 +96,27 @@ class _LoginState extends State<Login> {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const InputElement(
+                InputElement(
+                    onChange: (v) => {
+                          setState(() {
+                            mobile = v;
+                          })
+                        },
+                    maxLength: 10,
                     label: "Mobile number",
                     placeholder: "10 digit mobile number",
                     keyboardType: TextInputType.number),
-                const FLButton(
-                  title: "Sign in",
-                  isLarge: true,
-                  type: ButtonType.logo,
-                  icon: Icons.arrow_forward,
-                ),
+                if (!isLoading)
+                  FLButton(
+                    onPressed: () =>
+                        mobile.isNotEmpty ? processLogin(mobile) : null,
+                    title: "Sign in",
+                    isLarge: true,
+                    type: ButtonType.logo,
+                    icon: Icons.arrow_forward,
+                  )
+                else
+                  const LoaderButton(isLarge: true, type: ButtonType.logo),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   child: GestureDetector(

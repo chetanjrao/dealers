@@ -5,14 +5,17 @@ import 'package:flutter_icons/flutter_icons.dart';
 class InputElement extends StatelessWidget {
   final String placeholder;
   final String label;
+  final int maxLength;
   final TextInputType keyboardType;
+  final void Function(String) onChange;
 
   const InputElement(
-      {Key key, 
-        @required this.placeholder, 
-        @required this.label,
-        @required this.keyboardType
-      })
+      {Key key,
+      @required this.placeholder,
+      @required this.label,
+      this.maxLength,
+      this.onChange,
+      @required this.keyboardType})
       : super(key: key);
 
   @override
@@ -30,9 +33,11 @@ class InputElement extends StatelessWidget {
                   color: Colors.black.withOpacity(0.6)),
             ),
             TextFormField(
+              onChanged: onChange,
               keyboardType: keyboardType,
               style: const TextStyle(fontFamily: primaryFont, fontSize: 16),
               cursorWidth: 1.0,
+              maxLength: maxLength,
               textAlign: TextAlign.left,
               decoration: InputDecoration(
                 contentPadding:
