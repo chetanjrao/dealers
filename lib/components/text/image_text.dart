@@ -12,7 +12,7 @@ class ImageText extends StatelessWidget {
     try {
       return "${_subTitles.first.substring(0, 1) ?? ""}${_subTitles.last.substring(0, 1) ?? ""}";
     } catch(e) {
-      return "AN";
+      return "";
     } 
   }
 
