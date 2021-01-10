@@ -7,6 +7,10 @@ import 'package:flutter_boxicons/flutter_boxicons.dart';
 
 class Home extends StatefulWidget {
 
+  final String code;
+
+  const Home({Key key, @required this.code}) : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -18,14 +22,14 @@ class _HomeState extends State<Home> {
     switch (index) {
       case 0:
         return HomeView(
-          code: "505287",
+          code: widget.code,
         );
       case 1:
         return Customers(
-           code: "505287"
+           code: widget.code
         );
       default:
-        return HomeView(code: "505287",);
+        return HomeView(code: widget.code,);
     }
   }
 

@@ -179,6 +179,21 @@ class _CustomerProfileState extends State<CustomerProfile>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  GestureDetector(
+                                    onTap: () async{
+                                      DateTime now = DateTime.now();
+                                      DateTime firstday =
+                                          DateTime(now.year, now.month, 1);
+                                      DateTime lastday =
+                                          DateTime(now.year, now.month + 1, 0);
+                                      var formatter = DateFormat('yyyy-MM-dd');
+                                        final bool _canLaunch = await canLaunch(
+                                            "$apiUrl/console/${widget.code}/api/bills/customers/${widget.customer}/reciept/?from=${formatter.format(firstday)}&to=${formatter.format(lastday)}");
+                                        if (_canLaunch) {
+                                          await launch("$apiUrl/console/${widget.code}/api/bills/customers/${widget.customer}/reciept/?from=${formatter.format(firstday)}&to=${formatter.format(lastday)}");
+                                        }
+                                    },
+                                    child: 
                                   Container(
                                       margin:
                                           EdgeInsets.symmetric(horizontal: 4.0),
@@ -199,6 +214,7 @@ class _CustomerProfileState extends State<CustomerProfile>
                                             EdgeInsets.only(left: 4, right: 8),
                                         label: Text("View Monthly Bill"),
                                       )),
+                                  ),
                                   Container(
                                       margin:
                                           EdgeInsets.symmetric(horizontal: 4.0),

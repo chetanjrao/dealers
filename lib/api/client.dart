@@ -32,6 +32,14 @@ class APIClient {
         }));
   }
 
+  Future<http.Response> getProfile() async {
+    String accessToken = await _preferences.getAccessToken();
+    return http.get("$apiUrl/dealers/api/profile/", headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader: "Bearer $accessToken"
+    });
+  }
+
   Future<http.Response> getCustomers(String code) async {
     String accessToken = await _preferences.getAccessToken();
     return http.post("$apiUrl/dealers/api/customers/",
@@ -44,16 +52,14 @@ class APIClient {
         }));
   }
 
-  Future<http.Response> getCustomerProfile(String code, dynamic customer) async {
+  Future<http.Response> getCustomerProfile(
+      String code, dynamic customer) async {
     String accessToken = await _preferences.getAccessToken();
     return http.post("$apiUrl/dealers/api/customers/profile/",
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer $accessToken"
         },
-        body: jsonEncode({
-          "code": code,
-          "customer": customer
-        }));
+        body: jsonEncode({"code": code, "customer": customer}));
   }
 }
