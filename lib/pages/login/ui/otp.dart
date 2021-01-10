@@ -5,6 +5,7 @@ import 'package:dealers/api/client.dart';
 import 'package:dealers/components/colors.dart';
 import 'package:dealers/components/components.dart';
 import 'package:dealers/components/fonts.dart';
+import 'package:dealers/pages/user/landing.dart';
 import 'package:dealers/utils/prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -38,17 +39,14 @@ class _OTPState extends State<OTP> {
       isLoading = true;
     });
     Response response = await apiClient.verifyLogin(mobile, otp);
-    print(response.body);
     dynamic jsonResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("Login successful");
       setState(() {
         isLoading = false;
       });
       preferences.setAccessToken('${jsonResponse["access_token"]}');
       preferences.setRefreshToken('${jsonResponse["refresh_token"]}');
-      // Navigator.of(context)
-      //     .push(MaterialPageRoute(builder: (context) => OTP(mobile: mobile)));
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Landing()), (route) => false);
     } else {
       setState(() {
         isLoading = false;
@@ -82,16 +80,15 @@ class _OTPState extends State<OTP> {
                 Container(
                     margin: const EdgeInsets.only(top: 12.0),
                     child: const BackButton(color: Colors.black)),
-                
-                  Container(
-                      margin: const EdgeInsets.only(top: 12.0),
-                      child: const Text(
-                        "Enter OTP",
-                        style: TextStyle(
-                            fontFamily: primaryFont,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28),
-                      )),
+                Container(
+                    margin: const EdgeInsets.only(top: 12.0),
+                    child: const Text(
+                      "Enter OTP",
+                      style: TextStyle(
+                          fontFamily: primaryFont,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 28),
+                    )),
               ],
             ),
             Column(
@@ -106,14 +103,16 @@ class _OTPState extends State<OTP> {
                     label: "One Time Password",
                     placeholder: "Enter one time password",
                     keyboardType: TextInputType.number),
-               if(!isLoading) FLButton(
-                  onPressed: () =>
-                      otp.isNotEmpty ? verifyLogin(widget.mobile, otp) : null,
-                  title: "Proceed",
-                  isLarge: true,
-                  type: ButtonType.logo,
-                  icon: Icons.done,
-                ) else
+                if (!isLoading)
+                  FLButton(
+                    onPressed: () =>
+                        otp.isNotEmpty ? verifyLogin(widget.mobile, otp) : null,
+                    title: "Proceed",
+                    isLarge: true,
+                    type: ButtonType.logo,
+                    icon: Icons.done,
+                  )
+                else
                   const LoaderButton(isLarge: true, type: ButtonType.logo)
               ],
             )

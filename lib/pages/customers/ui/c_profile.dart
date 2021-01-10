@@ -272,9 +272,9 @@ class _CustomerProfileState extends State<CustomerProfile>
                                                                             ListTile(
                                                                           onTap:
                                                                               () async {
-                                                                                final bool _canLaunch = await canLaunch("$apiUrl/console/505287/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
+                                                                                final bool _canLaunch = await canLaunch("$apiUrl/console/${widget.code}/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
                                                                                 if (_canLaunch) {
-                                                                                  await launch("$apiUrl/console/505287/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
+                                                                                  await launch("$apiUrl/console/${widget.code}/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
                                                                                 }
                                                                               },
                                                                           shape:

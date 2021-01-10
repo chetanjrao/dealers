@@ -1,1 +1,1 @@
-const String apiUrl = "http://192.168.1.4:8000";
+const String apiUrl = "https://console.fuelcharge.in";
