@@ -10,8 +10,9 @@ import 'package:shimmer/shimmer.dart';
 
 class Customers extends StatefulWidget {
   final String code;
-
-  const Customers({Key key, @required this.code}) : super(key: key);
+  final DateTime from;
+  final DateTime to;
+  const Customers({Key key, @required this.code,@required this.from,@required this.to}) : super(key: key);
 
   @override
   _CustomersState createState() => _CustomersState();
@@ -168,7 +169,7 @@ class _CustomersState extends State<Customers> {
                           padding: EdgeInsets.symmetric(vertical: 12.0),
                           child: ListTile(
                             onTap: (){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => CustomerProfile(code: widget.code, customer: jsonResponse[index].id) ));
+                              Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => CustomerProfile(code: widget.code, customer: jsonResponse[index].id, from: widget.from, to: widget.to )));
                             },
                             leading: Container(
                               width: 48.0,

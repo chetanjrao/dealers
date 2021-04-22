@@ -16,8 +16,9 @@ import 'package:shimmer/shimmer.dart';
 class CustomerProfile extends StatefulWidget {
   final String code;
   final dynamic customer;
-
-  const CustomerProfile({Key key, @required this.code, @required this.customer})
+  final DateTime from;
+  final DateTime to;
+  const CustomerProfile({Key key, @required this.code, @required this.customer, @required this.from, @required this.to})
       : super(key: key);
 
   @override
@@ -180,40 +181,35 @@ class _CustomerProfileState extends State<CustomerProfile>
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   GestureDetector(
-                                    onTap: () async{
-                                      DateTime now = DateTime.now();
-                                      DateTime firstday =
-                                          DateTime(now.year, now.month, 1);
-                                      DateTime lastday =
-                                          DateTime(now.year, now.month + 1, 0);
+                                    onTap: () async {
                                       var formatter = DateFormat('yyyy-MM-dd');
-                                        final bool _canLaunch = await canLaunch(
-                                            "$apiUrl/console/${widget.code}/api/bills/customers/${widget.customer}/reciept/?from=${formatter.format(firstday)}&to=${formatter.format(lastday)}");
-                                        if (_canLaunch) {
-                                          await launch("$apiUrl/console/${widget.code}/api/bills/customers/${widget.customer}/reciept/?from=${formatter.format(firstday)}&to=${formatter.format(lastday)}");
-                                        }
+                                      final bool _canLaunch = await canLaunch(
+                                          "$apiUrl/console/${widget.code}/api/bills/customers/${widget.customer}/reciept/?from=${formatter.format(widget.from)}&to=${formatter.format(widget.to)}");
+                                      if (_canLaunch) {
+                                        await launch(
+                                            "$apiUrl/console/${widget.code}/api/bills/customers/${widget.customer}/reciept/?from=${formatter.format(widget.from)}&to=${formatter.format(widget.to)}");
+                                      }
                                     },
-                                    child: 
-                                  Container(
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 4.0),
-                                      child: Chip(
-                                        backgroundColor:
-                                            logoColor.withOpacity(0.1),
-                                        avatar: Icon(
-                                          Boxicons.bx_file,
-                                          size: 18.0,
-                                          color: logoColor,
-                                        ),
-                                        labelStyle: TextStyle(
-                                          color: logoColor,
-                                          fontFamily: "Sailec",
-                                          fontSize: 12.0,
-                                        ),
-                                        labelPadding:
-                                            EdgeInsets.only(left: 4, right: 8),
-                                        label: Text("View Monthly Bill"),
-                                      )),
+                                    child: Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        child: Chip(
+                                          backgroundColor:
+                                              logoColor.withOpacity(0.1),
+                                          avatar: Icon(
+                                            Boxicons.bx_file,
+                                            size: 18.0,
+                                            color: logoColor,
+                                          ),
+                                          labelStyle: TextStyle(
+                                            color: logoColor,
+                                            fontFamily: "Sailec",
+                                            fontSize: 12.0,
+                                          ),
+                                          labelPadding: EdgeInsets.only(
+                                              left: 4, right: 8),
+                                          label: Text("View Monthly Bill"),
+                                        )),
                                   ),
                                   Container(
                                       margin:
@@ -258,7 +254,10 @@ class _CustomerProfileState extends State<CustomerProfile>
                                                               ListView.builder(
                                                                   shrinkWrap:
                                                                       true,
-                                                                  itemCount: (jsonResponse["statements"] as List).length,
+                                                                  itemCount: (jsonResponse[
+                                                                              "statements"]
+                                                                          as List)
+                                                                      .length,
                                                                   itemBuilder:
                                                                       (_ctx,
                                                                           index) {
@@ -272,11 +271,14 @@ class _CustomerProfileState extends State<CustomerProfile>
                                                                             ListTile(
                                                                           onTap:
                                                                               () async {
-                                                                                final bool _canLaunch = await canLaunch("$apiUrl/console/${widget.code}/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
-                                                                                if (_canLaunch) {
-                                                                                  await launch("$apiUrl/console/${widget.code}/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
-                                                                                }
-                                                                              },
+                                                                            final bool
+                                                                                _canLaunch =
+                                                                                await canLaunch("$apiUrl/console/${widget.code}/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
+                                                                            print('$apiUrl/console/${widget.code}/api/statements/${jsonResponse["statements"][index]["id"]}/print/');
+                                                                            if (_canLaunch) {
+                                                                              await launch("$apiUrl/console/${widget.code}/api/statements/${jsonResponse["statements"][index]["id"]}/print/");
+                                                                            }
+                                                                          },
                                                                           shape:
                                                                               RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
                                                                           contentPadding: EdgeInsets.symmetric(
@@ -312,7 +314,6 @@ class _CustomerProfileState extends State<CustomerProfile>
                                                                                   text: TextSpan(children: [
                                                                                     TextSpan(text: "${jsonResponse["statements"][index]["due"]}", style: TextStyle(color: Colors.grey, fontSize: 12.0, fontWeight: FontWeight.w400)),
                                                                                     TextSpan(text: " • ", style: TextStyle(color: Colors.grey, fontSize: 12.0, fontWeight: FontWeight.w500)),
-                                                                                    TextSpan(text: "\u20b9${jsonResponse["statements"][index]["balance"]}", style: TextStyle(color: Colors.grey, fontSize: 13.0, fontWeight: FontWeight.w400))
                                                                                   ]),
                                                                                 ),
                                                                               )
@@ -389,7 +390,8 @@ class _CustomerProfileState extends State<CustomerProfile>
                                             child: RichText(
                                               text: TextSpan(children: [
                                                 TextSpan(
-                                                    text: "${jsonResponse["ledger"][index]["date"]}",
+                                                    text:
+                                                        "${jsonResponse["ledger"][index]["date"]}",
                                                     style: TextStyle(
                                                         color: Colors.grey,
                                                         fontSize: 12.0,
@@ -403,7 +405,8 @@ class _CustomerProfileState extends State<CustomerProfile>
                                                         fontWeight:
                                                             FontWeight.w500)),
                                                 TextSpan(
-                                                    text: "\u20b9${jsonResponse["ledger"][index]["closing_balance"]}",
+                                                    text:
+                                                        "\u20b9${(jsonResponse["ledger"][index]["closing_balance"]).toStringAsFixed(2)}",
                                                     style: TextStyle(
                                                         color: Colors.grey,
                                                         fontSize: 13.0,
@@ -415,10 +418,14 @@ class _CustomerProfileState extends State<CustomerProfile>
                                     ),
                                     trailing: Container(
                                         child: Text(
-                                          "\u20b9${jsonResponse["ledger"][index]["amount"]}",
+                                            "\u20b9${jsonResponse["ledger"][index]["amount"]}",
                                             style: TextStyle(
                                                 fontFamily: "Gilroy Regular",
-                                                color: double.parse('${jsonResponse["ledger"][index]["amount"]}') > 0 ? Color(0xff067d68) : dangerColor,
+                                                color: double.parse(
+                                                            '${jsonResponse["ledger"][index]["amount"]}') >
+                                                        0
+                                                    ? Color(0xff067d68)
+                                                    : dangerColor,
                                                 fontWeight: FontWeight.w700,
                                                 fontSize: 16.0))),
                                   ));

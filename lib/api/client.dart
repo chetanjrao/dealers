@@ -20,9 +20,9 @@ class APIClient {
         body: jsonEncode({"mobile": mobile, "otp": otp}));
   }
 
-  Future<http.Response> getData(String code) async {
+  Future<http.Response> getData(String code, String from, String to) async {
     String accessToken = await _preferences.getAccessToken();
-    return http.post("$apiUrl/dealers/api/data/",
+    return http.post("$apiUrl/dealers/api/data/?from=$from&to=$to",
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           HttpHeaders.authorizationHeader: "Bearer $accessToken"

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:http/http.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:date_range_picker/date_range_picker.dart' as DateRangePicker;
 
 class Landing extends StatefulWidget {
   @override
@@ -16,6 +17,9 @@ class Landing extends StatefulWidget {
 class _LandingState extends State<Landing> {
   bool isLoading = true;
   dynamic jsonResponse;
+  DateTime now = DateTime.now();
+  DateTime from;
+  DateTime to;
   final GlobalKey<ScaffoldState> key = new GlobalKey<ScaffoldState>();
   final APIClient apiClient = new APIClient();
 
@@ -34,6 +38,10 @@ class _LandingState extends State<Landing> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      from = DateTime(now.year, now.month);
+      to = DateTime(now.year, now.month + 1, 0);
+    });
     getData();
   }
 
@@ -41,6 +49,34 @@ class _LandingState extends State<Landing> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+              padding: const EdgeInsets.only(right: 12.0),
+              icon: const Icon(
+                Icons.calendar_today_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () async {
+                DateTime now = DateTime.now();
+                final List<DateTime> picked =
+                    await DateRangePicker.showDatePicker(
+                        context: context,
+                        initialFirstDate: from,
+                        initialLastDate: to,
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(now.year + 2));
+                if (picked != null && picked.length == 2) {
+                  setState(() {
+                    from = picked[0];
+                    to = picked[1];
+                  });
+                }
+              })
+        ],
+      ),
       body: isLoading
           ? Center(
               child: ListView.builder(
@@ -112,13 +148,13 @@ class _LandingState extends State<Landing> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                  margin: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: Image.asset(
-                    "assets/logo-small.png",
-                    width: 48.0,
-                    height: 48.0,
+                    margin: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: Image.asset(
+                      "assets/logo-small.png",
+                      width: 48.0,
+                      height: 48.0,
+                    ),
                   ),
-                ),
                   Text(
                     "Hi,\n ${jsonResponse["name"]}",
                     overflow: TextOverflow.fade,
@@ -150,10 +186,13 @@ class _LandingState extends State<Landing> {
                           padding: EdgeInsets.symmetric(horizontal: 24.0),
                           child: ListTile(
                             onTap: () {
-                              Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (ctx) => Home(
-                                    code: "${jsonResponse["stations"][index]["code"]}",
-                                  )));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (ctx) => Home(
+                                        code:
+                                            "${jsonResponse["stations"][index]["code"]}",
+                                            from: from,
+                                            to: to,
+                                      )));
                             },
                             trailing: Icon(Boxicons.bx_chevron_right),
                             title: Text(

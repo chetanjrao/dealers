@@ -8,8 +8,9 @@ import 'package:flutter_boxicons/flutter_boxicons.dart';
 class Home extends StatefulWidget {
 
   final String code;
-
-  const Home({Key key, @required this.code}) : super(key: key);
+  final DateTime from;
+  final DateTime to;
+  const Home({Key key, @required this.code,@required this.from,@required this.to}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
@@ -23,13 +24,17 @@ class _HomeState extends State<Home> {
       case 0:
         return HomeView(
           code: widget.code,
+           from: widget.from,
+           to: widget.to,
         );
       case 1:
         return Customers(
-           code: widget.code
+           code: widget.code,
+           from: widget.from,
+           to: widget.to,
         );
       default:
-        return HomeView(code: widget.code,);
+        return HomeView(code: widget.code, from: widget.from, to: widget.to, );
     }
   }
 

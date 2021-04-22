@@ -16,8 +16,9 @@ import 'package:url_launcher/url_launcher.dart';
 class HomeView extends StatefulWidget {
 
   final String code;
-
-  const HomeView({Key key, @required this.code}) : super(key: key);
+  final DateTime from;
+  final DateTime to;
+  const HomeView({Key key, @required this.code,@required this.from,@required this.to}) : super(key: key);
 
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -36,7 +37,8 @@ class _HomeViewState extends State<HomeView> {
     setState(() {
       isLoading = true;
     });
-    Response response = await apiClient.getData(widget.code);
+    var formatter = DateFormat('dd-MM-yyyy');
+    Response response = await apiClient.getData(widget.code, formatter.format(widget.from), formatter.format(widget.to));
     dynamic _jsonReponse = jsonDecode(response.body);
     setState(() {
       jsonResponse = _jsonReponse;
@@ -380,17 +382,12 @@ class _HomeViewState extends State<HomeView> {
                             TextButton(
                               child: Text('View DSR'),
                               onPressed: () async {
-                                DateTime now = DateTime.now();
-                                DateTime firstday =
-                                    DateTime(now.year, now.month, 1);
-                                DateTime lastday =
-                                    DateTime(now.year, now.month + 1, 0);
                                 var formatter = DateFormat('yyyy-MM-dd');
                                 if (fuel != null) {
                                   final bool _canLaunch = await canLaunch(
-                                      "$apiUrl/console/${widget.code}/reports/api/dip-report/print/?from=${formatter.format(firstday)}&to=${formatter.format(lastday)}&fuel=$fuel");
+                                      "$apiUrl/console/${widget.code}/reports/api/dip-report/print/?from=${formatter.format(widget.from)}&to=${formatter.format(widget.to)}&fuel=$fuel");
                                   if (_canLaunch) {
-                                    await launch("$apiUrl/console/${widget.code}/reports/api/dip-report/print/?from=${formatter.format(firstday)}&to=${formatter.format(lastday)}&fuel=$fuel");
+                                    await launch("$apiUrl/console/${widget.code}/reports/api/dip-report/print/?from=${formatter.format(widget.from)}&to=${formatter.format(widget.to)}&fuel=$fuel");
                                   }
                                 }
                               },
